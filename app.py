@@ -2,8 +2,6 @@ import streamlit as st
 from parrot import Parrot
 import os
 import warnings
-import platform
-import sys
 import random
 
 # Suppress all warnings
@@ -12,21 +10,8 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
 
-# Import torch first
-try:
-    import torch
-    
-    # Patch for PyTorch path error in Streamlit
-    original_getattr = torch._classes.__getattr__
-
-    def patched_getattr(name):
-        if name == "__path__":
-            return None
-        return original_getattr(name)
-
-    torch._classes.__getattr__ = patched_getattr
-except (ImportError, AttributeError):
-    pass
+# Simpler approach to handle torch path errors
+os.environ["PYTHONWARNINGS"] = "ignore::RuntimeWarning"
 
 # Fun loading messages
 loading_messages = [
