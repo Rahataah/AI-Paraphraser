@@ -6,10 +6,8 @@ from parrot import Parrot
 def load_parrot_model():
     return Parrot(
         model_tag="prithivida/parrot_paraphraser_on_T5",
-        use_gpu=False,
-        max_length=128,
-        do_sample=True
-    )
+        use_gpu=False
+    )  # Only these 2 parameters are valid
 
 parrot = load_parrot_model()
 
@@ -21,7 +19,11 @@ def get_paraphrased_sentences(input_text, num_return_sequences=1):
             do_diverse=False,
             max_return_phrases=num_return_sequences,
             adequacy_threshold=0.80,
-            fluency_threshold=0.80
+            fluency_threshold=0.80,
+            max_length=128,  # Generation parameters stay here
+            do_sample=True,
+            top_k=50,
+            top_p=0.95
         )
         return [phrase[0] for phrase in phrases] if phrases else ["No paraphrases generated"]
     except Exception as e:
