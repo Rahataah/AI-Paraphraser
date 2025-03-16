@@ -1,47 +1,81 @@
 import streamlit as st
-from parrot import Parrot
 import os
 import warnings
 import random
+import requests
+import json
 
 # Suppress all warnings
 warnings.filterwarnings("ignore")
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
-
-# Simpler approach to handle torch path errors
 os.environ["PYTHONWARNINGS"] = "ignore::RuntimeWarning"
 
 # Fun loading messages
 loading_messages = [
     "Warming up the word blender...",
-    "Teaching parrots new phrases...",
+    "Teaching AI new phrases...",
     "Scrambling the dictionary...",
     "Confusing the thesaurus...",
     "Discombobulating sentences...",
 ]
 
-# Load model once with simplified configuration
-@st.cache_resource(show_spinner=False)
-def load_parrot_model():
-    return Parrot(
-        model_tag="prithivida/parrot_paraphraser_on_T5",
-        use_gpu=False
-    )
+# DeepSeek API configuration
+DEEPSEEK_API_KEY = "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"
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
-parrot = load_parrot_model()
-
-def get_paraphrased_sentences(input_text, num_return_sequences=1):
+def get_paraphrased_sentences(input_text, num_variants=1):
     try:
-        phrases = parrot.augment(
-            input_phrase=input_text,
-            diversity_ranker="levenshtein",
-            max_return_phrases=num_return_sequences,
-            adequacy_threshold=0.80,
-            fluency_threshold=0.80
-        )
-        return [phrase[0] for phrase in phrases] if phrases else []
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+        }
+        
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": "You are a creative paraphrasing assistant. Your task is to rewrite the given text in different ways while preserving the core meaning. Be creative, use different vocabulary, and vary sentence structures. Make it sound natural but different from the original."},
+                {"role": "user", "content": f"Please paraphrase this text in {num_variants} different ways. Number each version. Text: '{input_text}'"}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 1024
+        }
+        
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, data=json.dumps(payload))
+        
+        if response.status_code != 200:
+            st.error(f"API Error: {response.status_code} - {response.text}")
+            return []
+            
+        result = response.json()
+        content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+        
+        # Parse the response to extract variants
+        variants = []
+        lines = content.split("\n")
+        current_variant = ""
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            # Check if line starts with a number followed by period or colon
+            if (line[0].isdigit() and line[1:].startswith(". ")) or (line[0].isdigit() and line[1:].startswith(": ")):
+                if current_variant:
+                    variants.append(current_variant)
+                current_variant = line[line.find(" ")+1:].strip()
+            else:
+                current_variant += " " + line
+                
+        # Add the last variant if exists
+        if current_variant and current_variant not in variants:
+            variants.append(current_variant)
+            
+        # If parsing failed, just split by lines
+        if not variants:
+            variants = [line.strip() for line in content.split("\n") if line.strip()]
+            
+        return variants[:num_variants]
+        
     except Exception as e:
         st.error(f"Oopsie woopsie! Paraphrasing boo-boo: {str(e)}")
         return []
