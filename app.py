@@ -16,17 +16,60 @@ loading_messages = [
     "Discombobulating sentences...",
 ]
 
-# OpenRouter API configuration
-API_KEY = "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"
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# Streamlit UI with fun theme
+st.set_page_config(
+    page_title="The Bamboozling Paraphraser",
+    page_icon="🦜",
+    initial_sidebar_state="collapsed"
+)
 
-def get_paraphrased_sentences(input_text, num_variants=1):
+# Custom CSS
+st.markdown("""
+<style>
+    .main-header {
+        font-family: 'Comic Sans MS', cursive;
+        color: #FF69B4;
+    }
+    .fun-text {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+    }
+    .stButton>button {
+        background-color: #FF69B4;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Fun header
+st.markdown("<h1 class='main-header'>🤪 The Utterly Bamboozling Text Paraphraser 🤪</h1>", unsafe_allow_html=True)
+st.markdown("<p class='fun-text'>Turn your boring words into wackadoodle word salad!</p>", unsafe_allow_html=True)
+
+# API key input
+api_key = st.text_input("Enter your OpenRouter API key:", type="password", 
+                        help="Get your API key from openrouter.ai")
+
+# Main content
+input_text = st.text_area("Type your normal, boring text here:", height=150, 
+                          placeholder="Enter some text and watch the magic of confusion happen!")
+
+# Fun slider labels
+num_variants = st.slider(
+    "Flummoxification Level (how many variants?)",
+    min_value=1,
+    max_value=5,
+    value=1,
+    help="More variants = more nonsense!"
+)
+
+def get_paraphrased_sentences(api_key, input_text, num_variants=1):
     try:
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}",
-            "HTTP-Referer": "https://ai-paraphraser.streamlit.app",
-            "X-Title": "The Bamboozling Paraphraser"
+            "Authorization": f"Bearer {api_key}",
+            "HTTP-Referer": "https://bamboozling-paraphraser.app",
+            "X-Title": "Bamboozling Paraphraser"
         }
         
         payload = {
@@ -39,7 +82,11 @@ def get_paraphrased_sentences(input_text, num_variants=1):
             "max_tokens": 1024
         }
         
-        response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions", 
+            headers=headers, 
+            data=json.dumps(payload)
+        )
         
         if response.status_code != 200:
             st.error(f"API Error: {response.status_code} - {response.text}")
@@ -48,7 +95,7 @@ def get_paraphrased_sentences(input_text, num_variants=1):
         result = response.json()
         content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
         
-        # Parse response to extract variants
+        # Parse the response to extract variants
         variants = []
         lines = content.split("\n")
         current_variant = ""
@@ -80,53 +127,15 @@ def get_paraphrased_sentences(input_text, num_variants=1):
         st.error(f"Oopsie woopsie! Paraphrasing boo-boo: {str(e)}")
         return []
 
-# Streamlit UI with fun theme
-st.set_page_config(
-    page_title="The Bamboozling Paraphraser",
-    page_icon="🦜",
-    initial_sidebar_state="collapsed"
-)
-
-# Custom CSS
-st.markdown("""
-<style>
-    .main-header {
-        font-family: 'Comic Sans MS', cursive;
-        color: #FF69B4;
-    }
-    .fun-text {
-        font-family: 'Arial', sans-serif;
-        font-size: 18px;
-    }
-    .stButton>button {
-        background-color: #FF69B4;
-        color: white;
-        font-weight: bold;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Fun header
-st.markdown("<h1 class='main-header'>🤪 The Utterly Bamboozling Text Paraphraser 🤪</h1>", unsafe_allow_html=True)
-st.markdown("<p class='fun-text'>Turn your boring words into wackadoodle word salad!</p>", unsafe_allow_html=True)
-
-input_text = st.text_area("Type your normal, boring text here:", height=150, 
-                          placeholder="Enter some text and watch the magic of confusion happen!")
-
-# Fun slider labels
-num_variants = st.slider(
-    "Flummoxification Level (how many variants?)",
-    min_value=1,
-    max_value=5,
-    value=1,
-    help="More variants = more nonsense!"
-)
-
 # Fun button
 if st.button("BAMBOOZLIFY!", type="primary"):
-    if input_text.strip():
+    if not api_key:
+        st.error("Please enter your API key first!")
+    elif not input_text.strip():
+        st.error("Hey! You need to type something first, you silly goose!")
+    else:
         with st.spinner(random.choice(loading_messages)):
-            results = get_paraphrased_sentences(input_text, num_variants)
+            results = get_paraphrased_sentences(api_key, input_text, num_variants)
             
             if results:
                 st.subheader("🎉 Your text, but weirder:")
@@ -142,8 +151,6 @@ if st.button("BAMBOOZLIFY!", type="primary"):
                 st.success(random.choice(reactions))
             else:
                 st.warning("Oops! The word blender is empty. Try again!")
-    else:
-        st.error("Hey! You need to type something first, you silly goose!")
 
 # Footer
 st.markdown("---")
