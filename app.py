@@ -2,20 +2,13 @@ import streamlit as st
 from parrot import Parrot
 import os
 import warnings
-import asyncio
-import platform  # <-- Add this import
+import platform
 
 # Suppress all warnings
-warnings.filterwarnings("ignore", category=SyntaxWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore")
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
-
-# Fix event loop policy for Streamlit only on Windows
-if platform.system() == 'Windows':
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Load model once with simplified configuration
 @st.cache_resource(show_spinner=False)
@@ -34,9 +27,8 @@ def get_paraphrased_sentences(input_text, num_return_sequences=1):
             diversity_ranker="levenshtein",
             max_return_phrases=num_return_sequences,
             adequacy_threshold=0.80,
-            fluency_threshold=0.80,
-            max_length=128,
-            do_sample=True  # Removed unsupported parameters
+            fluency_threshold=0.80
+            # Removed all unsupported parameters
         )
         return [phrase[0] for phrase in phrases] if phrases else []
     except Exception as e:
