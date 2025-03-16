@@ -39,7 +39,7 @@ st.write("Enter a passage and get a paraphrased version.")
 input_text = st.text_area("Enter your text here:")
 num_variants = st.slider("Number of paraphrased variants", min_value=1, max_value=5, value=1)
 
-!pip install git+https://github.com/PrithivirajDamodaran/Parrot_Paraphraser.git
+# Remove the !pip install line completely from the Python file
 from parrot import Parrot
 import torch
 
