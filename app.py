@@ -36,8 +36,7 @@ def get_paraphrased_sentences(input_text, num_return_sequences=1):
             adequacy_threshold=0.80,
             fluency_threshold=0.80,
             max_length=128,
-            top_k=50,
-            top_p=0.95
+            do_sample=True  # Removed unsupported parameters
         )
         return [phrase[0] for phrase in phrases] if phrases else []
     except Exception as e:
