@@ -17,7 +17,7 @@ loading_messages = [
 ]
 
 # OpenRouter API configuration
-API_KEY = "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"
+API_KEY = "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"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 def get_paraphrased_sentences(input_text, num_variants=1):
@@ -25,8 +25,8 @@ def get_paraphrased_sentences(input_text, num_variants=1):
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {API_KEY}",
-            "HTTP-Referer": "https://bamboozling-paraphraser.app",
-            "X-Title": "Bamboozling Paraphraser"
+            "HTTP-Referer": "https://ai-paraphraser.streamlit.app",
+            "X-Title": "The Bamboozling Paraphraser"
         }
         
         payload = {
@@ -48,7 +48,7 @@ def get_paraphrased_sentences(input_text, num_variants=1):
         result = response.json()
         content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
         
-        # Parse the response to extract variants
+        # Parse response to extract variants
         variants = []
         lines = content.split("\n")
         current_variant = ""
