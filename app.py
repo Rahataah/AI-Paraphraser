@@ -54,10 +54,10 @@ api_key = st.text_input("Enter your OpenRouter API key:", type="password",
 input_text = st.text_area("Type your normal, boring text here:", height=150, 
                           placeholder="Enter some text and watch the magic of confusion happen!")
 
-# Removing the Flummoxification Level slider and setting a default value
-num_variants = 3  # Default to 3 variants
+# Set to just 1 variant
+num_variants = 1  # Default to just 1 variant
 
-def get_paraphrased_sentences(api_key, input_text, num_variants=3):
+def get_paraphrased_sentences(api_key, input_text, num_variants=1):
     try:
         headers = {
             "Content-Type": "application/json",
@@ -70,7 +70,7 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=3):
             "model": "google/gemini-2.0-flash-lite-preview-02-05:free",
             "messages": [
                 {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better!"},
-                {"role": "user", "content": f"GOOFIFY this text in {num_variants} different ways. Make each version SUPER SILLY and RIDICULOUS. Number each version. Text: '{input_text}'"}
+                {"role": "user", "content": f"GOOFIFY this text. Make it SUPER SILLY and RIDICULOUS. Text: '{input_text}'"}
             ],
             "temperature": 0.9,
             "max_tokens": 1024
