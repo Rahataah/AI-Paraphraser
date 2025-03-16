@@ -4,13 +4,15 @@ from transformers import pipeline
 # Load model once
 @st.cache_resource
 def load_model():
-    return pipeline("summarization", model="facebook/bart-large-cnn")
+    # Change the task to "paraphrase" if a suitable model is available
+    return pipeline("text2text-generation", model="t5-base")
 
 paraphrase_model = load_model()
 
 def paraphrase_text(text):
-    paraphrased = paraphrase_model(text, max_length=150, min_length=30, do_sample=False)
-    return paraphrased[0]['summary_text']
+    # Adjust parameters for paraphrasing
+    paraphrased = paraphrase_model(text, max_length=150, min_length=30, do_sample=True, num_return_sequences=1)
+    return paraphrased[0]['generated_text']
 
 # Streamlit UI
 st.title("Text Paraphraser")
