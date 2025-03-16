@@ -75,10 +75,10 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=1):
         payload = {
             "model": "deepseek/deepseek-r1-zero:free",
             "messages": [
-                {"role": "system", "content": "You are a creative paraphrasing assistant with a sense of humor. Your task is to rewrite the given text in different ways while preserving the core meaning. Be creative, use different vocabulary, and vary sentence structures. Make it sound natural but different from the original. Add a touch of whimsy and humor when appropriate."},
-                {"role": "user", "content": f"Please paraphrase this text in {num_variants} different ways. Number each version. Text: '{input_text}'"}
+                {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better!"},
+                {"role": "user", "content": f"GOOFIFY this text in {num_variants} different ways. Make each version SUPER SILLY and RIDICULOUS. Number each version. Text: '{input_text}'"}
             ],
-            "temperature": 0.8,
+            "temperature": 0.9,
             "max_tokens": 1024
         }
         
