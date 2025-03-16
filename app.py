@@ -4,6 +4,7 @@ import os
 import warnings
 import platform
 import sys
+import random
 
 # Suppress all warnings
 warnings.filterwarnings("ignore")
@@ -16,7 +17,6 @@ try:
     import torch
     
     # Patch for PyTorch path error in Streamlit
-    # This prevents the "__path__._path" error from appearing in logs
     original_getattr = torch._classes.__getattr__
 
     def patched_getattr(name):
@@ -27,6 +27,15 @@ try:
     torch._classes.__getattr__ = patched_getattr
 except (ImportError, AttributeError):
     pass
+
+# Fun loading messages
+loading_messages = [
+    "Warming up the word blender...",
+    "Teaching parrots new phrases...",
+    "Scrambling the dictionary...",
+    "Confusing the thesaurus...",
+    "Discombobulating sentences...",
+]
 
 # Load model once with simplified configuration
 @st.cache_resource(show_spinner=False)
@@ -46,31 +55,72 @@ def get_paraphrased_sentences(input_text, num_return_sequences=1):
             max_return_phrases=num_return_sequences,
             adequacy_threshold=0.80,
             fluency_threshold=0.80
-            # Removed all unsupported parameters
         )
         return [phrase[0] for phrase in phrases] if phrases else []
     except Exception as e:
-        st.error(f"Paraphrasing error: {str(e)}")
+        st.error(f"Oopsie woopsie! Paraphrasing boo-boo: {str(e)}")
         return []
 
-# Streamlit UI
-st.set_page_config(page_title="Paraphraser")
-st.title("Text Paraphraser")
-st.write("Enter text to get paraphrased versions")
+# Streamlit UI with fun theme
+st.set_page_config(
+    page_title="The Bamboozling Paraphraser",
+    page_icon="🦜",
+    initial_sidebar_state="collapsed"
+)
 
-input_text = st.text_area("Input Text:", height=150)
-num_variants = st.slider("Variants", 1, 5, 1)
+# Custom CSS
+st.markdown("""
+<style>
+    .main-header {
+        font-family: 'Comic Sans MS', cursive;
+        color: #FF69B4;
+    }
+    .fun-text {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-if st.button("Paraphrase", type="primary"):
+# Fun header
+st.markdown("<h1 class='main-header'>🤪 The Utterly Bamboozling Text Paraphraser 🤪</h1>", unsafe_allow_html=True)
+st.markdown("<p class='fun-text'>Turn your boring words into wackadoodle word salad!</p>", unsafe_allow_html=True)
+
+input_text = st.text_area("Type your normal, boring text here:", height=150, 
+                          placeholder="Enter some text and watch the magic of confusion happen!")
+
+# Fun slider labels
+num_variants = st.slider(
+    "Flummoxification Level (how many variants?)",
+    min_value=1,
+    max_value=5,
+    value=1,
+    help="More variants = more nonsense!"
+)
+
+# Fun button
+if st.button("BAMBOOZLIFY!", type="primary"):
     if input_text.strip():
-        with st.spinner("Generating..."):
+        with st.spinner(random.choice(loading_messages)):
             results = get_paraphrased_sentences(input_text, num_variants)
             
             if results:
-                st.subheader("Output:")
+                st.subheader("🎉 Your text, but weirder:")
                 for i, text in enumerate(results):
-                    st.markdown(f"{i+1}. {text}")
+                    st.markdown(f"**Version {i+1}**: _{text}_")
+                
+                # Fun reactions
+                reactions = ["Wow! That's... different!", 
+                             "Is this even English anymore?", 
+                             "Your English teacher would be so confused!",
+                             "Shakespeare is rolling in his grave!",
+                             "This is what happens when AI drinks coffee!"]
+                st.success(random.choice(reactions))
             else:
-                st.warning("No paraphrases generated")
+                st.warning("Oops! The word blender is empty. Try again!")
     else:
-        st.error("Please input text first")
+        st.error("Hey! You need to type something first, you silly goose!")
+
+# Footer
+st.markdown("---")
+st.markdown("*Remember: When life gives you words, make word-salad!*")
