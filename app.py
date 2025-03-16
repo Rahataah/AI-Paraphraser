@@ -10,8 +10,9 @@ def load_model():
 paraphrase_model = load_model()
 
 def paraphrase_text(text):
-    # Adjust parameters for paraphrasing
-    paraphrased = paraphrase_model(text, max_length=150, min_length=30, do_sample=True, num_return_sequences=1)
+    # Format the input for the T5 model to perform paraphrasing
+    input_text = f"paraphrase: {text} </s>"
+    paraphrased = paraphrase_model(input_text, max_length=150, min_length=30, do_sample=True, num_return_sequences=1)
     return paraphrased[0]['generated_text']
 
 # Streamlit UI
