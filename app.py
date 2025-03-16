@@ -1,12 +1,21 @@
 import streamlit as st
 from parrot import Parrot
 import os
+import warnings
+import asyncio
 
-# Suppress warnings
+# Suppress all warnings
+warnings.filterwarnings("ignore", category=SyntaxWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
 
-# Load model once
+# Fix event loop policy for Streamlit
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+# Load model once with simplified configuration
 @st.cache_resource(show_spinner=False)
 def load_parrot_model():
     return Parrot(
