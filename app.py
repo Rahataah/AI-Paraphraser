@@ -131,12 +131,11 @@ if st.button("BAMBOOZLIFY!", type="primary"):
         with st.spinner(random.choice(loading_messages)):
             results = get_paraphrased_sentences(api_key, input_text, num_variants)
             
-            if results:
+            if results and len(results) > 0:
                 st.subheader("🎉 Your text, but weirder:")
-                for i, text in enumerate(results):
-                    st.markdown(f"**Version {i+1}**: _{text}_")
+                # Display just the text without the "Version" prefix
+                st.markdown(f"_{results[0]}_")
                 
-               
                 # Fun reactions
                 reactions = ["Wow! That's... different!", 
                              "Is this even English anymore?", 
