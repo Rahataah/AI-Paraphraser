@@ -1,13 +1,18 @@
 import streamlit as st
 from parrot import Parrot
+import os
+
+# Suppress warnings
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Load model once
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_parrot_model():
     return Parrot(
         model_tag="prithivida/parrot_paraphraser_on_T5",
         use_gpu=False
-    )  # Only these 2 parameters are valid
+    )
 
 parrot = load_parrot_model()
 
@@ -16,34 +21,36 @@ def get_paraphrased_sentences(input_text, num_return_sequences=1):
         phrases = parrot.augment(
             input_phrase=input_text,
             diversity_ranker="levenshtein",
-            do_diverse=False,
             max_return_phrases=num_return_sequences,
             adequacy_threshold=0.80,
             fluency_threshold=0.80,
-            max_length=128,  # Generation parameters stay here
-            do_sample=True,
+            max_length=128,
             top_k=50,
             top_p=0.95
         )
-        return [phrase[0] for phrase in phrases] if phrases else ["No paraphrases generated"]
+        return [phrase[0] for phrase in phrases] if phrases else []
     except Exception as e:
-        st.error(f"Error in paraphrasing: {str(e)}")
-        return ["Error in paraphrasing"]
+        st.error(f"Paraphrasing error: {str(e)}")
+        return []
 
 # Streamlit UI
+st.set_page_config(page_title="Paraphraser")
 st.title("Text Paraphraser")
-st.write("Enter a passage and get a paraphrased version.")
+st.write("Enter text to get paraphrased versions")
 
-input_text = st.text_area("Enter your text here:")
-num_variants = st.slider("Number of paraphrased variants", min_value=1, max_value=5, value=1)
+input_text = st.text_area("Input Text:", height=150)
+num_variants = st.slider("Variants", 1, 5, 1)
 
-if st.button("Paraphrase"):
+if st.button("Paraphrase", type="primary"):
     if input_text.strip():
-        with st.spinner("Generating paraphrases..."):
-            paraphrased_texts = get_paraphrased_sentences(input_text, num_return_sequences=num_variants)
+        with st.spinner("Generating..."):
+            results = get_paraphrased_sentences(input_text, num_variants)
             
-            st.subheader("Paraphrased Text:")
-            for i, text in enumerate(paraphrased_texts):
-                st.markdown(f"- {text}")
+            if results:
+                st.subheader("Output:")
+                for i, text in enumerate(results):
+                    st.markdown(f"{i+1}. {text}")
+            else:
+                st.warning("No paraphrases generated")
     else:
-        st.warning("Please enter some text to paraphrase.")
+        st.error("Please input text first")
