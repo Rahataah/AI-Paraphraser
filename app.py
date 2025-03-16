@@ -19,7 +19,7 @@ loading_messages = [
 # Streamlit UI with fun theme
 st.set_page_config(
     page_title="The Bamboozling Paraphraser",
-    page_icon="🦜",
+    page_icon="🥸🤡",
     initial_sidebar_state="collapsed"
 )
 
@@ -69,7 +69,7 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=1):
         payload = {
             "model": "openchat/openchat-7b:free",
             "messages": [
-                {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better!"},
+                {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better! Don't forget to roast for weird request"},
                 {"role": "user", "content": f"GOOFIFY this text. Make it SUPER SILLY and RIDICULOUS. Text: '{input_text}'"}
             ],
             "temperature": 0.9,
