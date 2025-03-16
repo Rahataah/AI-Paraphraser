@@ -54,16 +54,10 @@ api_key = st.text_input("Enter your OpenRouter API key:", type="password",
 input_text = st.text_area("Type your normal, boring text here:", height=150, 
                           placeholder="Enter some text and watch the magic of confusion happen!")
 
-# Fun slider labels
-num_variants = st.slider(
-    "Flummoxification Level (how many variants?)",
-    min_value=1,
-    max_value=5,
-    value=1,
-    help="More variants = more nonsense!"
-)
+# Removing the Flummoxification Level slider and setting a default value
+num_variants = 3  # Default to 3 variants
 
-def get_paraphrased_sentences(api_key, input_text, num_variants=1):
+def get_paraphrased_sentences(api_key, input_text, num_variants=3):
     try:
         headers = {
             "Content-Type": "application/json",
