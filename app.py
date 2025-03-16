@@ -133,8 +133,8 @@ if st.button("BAMBOOZLIFY!", type="primary"):
             
             if results and len(results) > 0:
                 st.subheader("🎉 Your text, but weirder:")
-                # Display just the text without the "Version" prefix
-                st.markdown(f"_{results[0]}_")
+                # Display just the text without italics or any formatting
+                st.write(results[0])
                 
                 # Fun reactions
                 reactions = ["Wow! That's... different!", 
