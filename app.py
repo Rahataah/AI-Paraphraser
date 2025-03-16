@@ -142,6 +142,10 @@ if st.button("BAMBOOZLIFY!", type="primary"):
                 for i, text in enumerate(results):
                     st.markdown(f"**Version {i+1}**: _{text}_")
                 
+                # Show raw API response for debugging
+                with st.expander("Show raw API response"):
+                    st.code(json.dumps(results, indent=2))
+                
                 # Fun reactions
                 reactions = ["Wow! That's... different!", 
                              "Is this even English anymore?", 
