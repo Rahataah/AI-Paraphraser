@@ -1,12 +1,10 @@
 import streamlit as st
-import os
-import warnings
-import random
 import requests
 import json
+import random
+import os
 
-# Suppress all warnings
-warnings.filterwarnings("ignore")
+# Suppress warnings
 os.environ["PYTHONWARNINGS"] = "ignore::RuntimeWarning"
 
 # Fun loading messages
@@ -18,30 +16,30 @@ loading_messages = [
     "Discombobulating sentences...",
 ]
 
-# OpenRouter API configuration for DeepSeek
-OPENROUTER_API_KEY = "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"
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# OpenRouter API configuration
+API_KEY = "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"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 def get_paraphrased_sentences(input_text, num_variants=1):
     try:
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "HTTP-Referer": "https://bamboozling-paraphraser.app",  # Required by OpenRouter
-            "X-Title": "Bamboozling Paraphraser"  # Required by OpenRouter
+            "Authorization": f"Bearer {API_KEY}",
+            "HTTP-Referer": "https://bamboozling-paraphraser.app",
+            "X-Title": "Bamboozling Paraphraser"
         }
         
         payload = {
-            "model": "deepseek/deepseek-r1-zero:free",  # Correct model name for DeepSeek R1 Zero
+            "model": "deepseek/deepseek-r1-zero:free",
             "messages": [
-                {"role": "system", "content": "You are a creative paraphrasing assistant. Your task is to rewrite the given text in different ways while preserving the core meaning. Be creative, use different vocabulary, and vary sentence structures. Make it sound natural but different from the original."},
+                {"role": "system", "content": "You are a creative paraphrasing assistant with a sense of humor. Your task is to rewrite the given text in different ways while preserving the core meaning. Be creative, use different vocabulary, and vary sentence structures. Make it sound natural but different from the original. Add a touch of whimsy and humor when appropriate."},
                 {"role": "user", "content": f"Please paraphrase this text in {num_variants} different ways. Number each version. Text: '{input_text}'"}
             ],
-            "temperature": 0.7,
+            "temperature": 0.8,
             "max_tokens": 1024
         }
         
-        response = requests.post(OPENROUTER_API_URL, headers=headers, data=json.dumps(payload))
+        response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
         
         if response.status_code != 200:
             st.error(f"API Error: {response.status_code} - {response.text}")
@@ -99,6 +97,11 @@ st.markdown("""
     .fun-text {
         font-family: 'Arial', sans-serif;
         font-size: 18px;
+    }
+    .stButton>button {
+        background-color: #FF69B4;
+        color: white;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
