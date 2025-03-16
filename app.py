@@ -1,44 +1,51 @@
 import streamlit as st
-import os
 import torch
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 
-# Force CPU execution
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-device = torch.device("cpu")
-
-# Load Pegasus model with manual class specification
+# Load model once
 @st.cache_resource
-def load_model():
-    model_name = "tuner007/pegasus_paraphrase"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+def load_parrot_model():
+    # Load Parrot model (Pegasus-based paraphraser)
+    tokenizer = PegasusTokenizer.from_pretrained("tuner007/pegasus_paraphrase")
+    model = PegasusForConditionalGeneration.from_pretrained("tuner007/pegasus_paraphrase")
     return model, tokenizer
 
-model, tokenizer = load_model()
+# Get paraphraser model and tokenizer
+model, tokenizer = load_parrot_model()
 
-def paraphrase_text(text):
-    # Encode input text
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding="longest").to(device)
-    # Generate paraphrased output
-    output = model.generate(**inputs, max_length=150, min_length=30, do_sample=True, num_return_sequences=1)
-    # Decode output
-    return tokenizer.decode(output[0], skip_special_tokens=True)
+def get_paraphrased_sentences(input_text, num_return_sequences=1, num_beams=10):
+    # Tokenize the input text
+    inputs = tokenizer([input_text], truncation=True, padding="longest", return_tensors="pt")
+    
+    # Generate paraphrased sentences
+    with torch.no_grad():
+        outputs = model.generate(
+            inputs["input_ids"],
+            num_beams=num_beams,
+            num_return_sequences=num_return_sequences,
+            max_length=60,
+            temperature=1.5
+        )
+    
+    # Decode the generated outputs back to text
+    paraphrased_texts = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+    
+    return paraphrased_texts
 
 # Streamlit UI
-st.title("AI-Powered Text Paraphraser (CPU Optimized)")
-st.write("Enter a passage and get a paraphrased version using the Pegasus model.")
+st.title("Text Paraphraser")
+st.write("Enter a passage and get a paraphrased version.")
 
 input_text = st.text_area("Enter your text here:")
+num_variants = st.slider("Number of paraphrased variants", min_value=1, max_value=5, value=1)
+
 if st.button("Paraphrase"):
     if input_text.strip():
-        with st.spinner("Generating paraphrased text..."):
-            paraphrased_text = paraphrase_text(input_text)
-        st.subheader("Paraphrased Text:")
-        st.write(paraphrased_text)
+        with st.spinner("Generating paraphrases..."):
+            paraphrased_texts = get_paraphrased_sentences(input_text, num_return_sequences=num_variants, num_beams=10)
+            
+            st.subheader("Paraphrased Text:")
+            for i, text in enumerate(paraphrased_texts):
+                st.write(f"**Variant {i+1}:** {text}")
     else:
         st.warning("Please enter some text to paraphrase.")
-
-# Footer
-st.markdown("---")
-st.markdown("Powered by [Hugging Face Transformers](https://huggingface.co/).")
