@@ -3,12 +3,29 @@ from parrot import Parrot
 import os
 import warnings
 import platform
+import sys
 
 # Suppress all warnings
 warnings.filterwarnings("ignore")
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
+
+# Patch for PyTorch path error in Streamlit
+# This prevents the "__path__._path" error from appearing in logs
+original_getattr = torch._classes.__getattr__
+
+def patched_getattr(name):
+    if name == "__path__":
+        return None
+    return original_getattr(name)
+
+# Apply the patch if torch is available
+try:
+    import torch
+    torch._classes.__getattr__ = patched_getattr
+except (ImportError, AttributeError):
+    pass
 
 # Load model once with simplified configuration
 @st.cache_resource(show_spinner=False)
