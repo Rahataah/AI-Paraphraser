@@ -3,6 +3,7 @@ from parrot import Parrot
 import os
 import warnings
 import asyncio
+import platform  # <-- Add this import
 
 # Suppress all warnings
 warnings.filterwarnings("ignore", category=SyntaxWarning)
@@ -12,8 +13,9 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
 
-# Fix event loop policy for Streamlit
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# Fix event loop policy for Streamlit only on Windows
+if platform.system() == 'Windows':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Load model once with simplified configuration
 @st.cache_resource(show_spinner=False)
