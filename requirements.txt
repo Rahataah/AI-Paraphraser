@@ -1,4 +1,4 @@
 streamlit==1.42.2
 transformers==4.49.0
 tf_keras==2.19.0
-torch==2.5.1
+torch==2.6.0
