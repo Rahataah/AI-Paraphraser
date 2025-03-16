@@ -67,7 +67,7 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=3):
         }
         
         payload = {
-            "model": "deepseek/deepseek-r1-zero:free",
+            "model": "google/gemini-2.0-flash-lite-preview-02-05:free",
             "messages": [
                 {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better!"},
                 {"role": "user", "content": f"GOOFIFY this text in {num_variants} different ways. Make each version SUPER SILLY and RIDICULOUS. Number each version. Text: '{input_text}'"}
