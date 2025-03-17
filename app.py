@@ -19,7 +19,7 @@ loading_messages = [
 # Streamlit UI with fun theme
 st.set_page_config(
     page_title="The Bamboozling Paraphraser",
-    page_icon="🥸🤡",
+    page_icon="🥸",
     initial_sidebar_state="collapsed"
 )
 
@@ -62,7 +62,7 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=1):
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            "HTTP-Referer": "https://bamboozling-paraphraser.app",
+            "HTTP-Referer": "https://ai-paraphraser.streamlit.app",
             "X-Title": "Bamboozling Paraphraser"
         }
         
