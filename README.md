@@ -13,8 +13,8 @@ Welcome to the most spectacularly underwhelming, mind-numbingly pointless text p
 
 ## 🚀 How to Use This Malarkey
 
-1. Type your normal, boring text in the box
-2. Slide the "Variants" doodad to pick how many different ways you want your text mangled
+1. Get your openrouter API and paste it in the text box [get free keys from openrouter](http://openrouter.ai/)
+2. Type your normal, boring text in the box
 3. Smash that "Paraphrase" button with reckless abandon
 4. Marvel at the hodgepodge of barely-related words that appear!
 
