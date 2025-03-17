@@ -20,7 +20,8 @@ Welcome to the most spectacularly underwhelming, mind-numbingly pointless text p
 
 ## 🧠 Technical Mumbo Jumbo
 
-This app uses the state-of-the-art "Parrot" model, which, despite its name, doesn't just repeat what you say but instead creates a topsy-turvy version that might vaguely resemble your original meaning. It's like playing telephone with a hyperactive toddler who just ate a bag of sugar!
+This app runs on the state-of-the-art "OpenChat 7B" model, which, unlike an actual parrot, doesn’t just mindlessly repeat what you say. Instead, it scrambles, twists, and remixes your words like a hyperactive DJ at a robot dance party. Think of it as an AI-powered game of telephone—except the last person in line is a very enthusiastic, slightly unpredictable poet!
+
 
 ## ⚠️ Warning
 
