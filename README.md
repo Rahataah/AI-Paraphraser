@@ -8,7 +8,6 @@ Welcome to the most spectacularly underwhelming, mind-numbingly pointless text p
 ## 🌟 Whimsical Features
 
 - **Discombobulation Engine**: Turns your eloquent prose into wackadoodle word salad!
-- **Flummoxification Slider**: Choose up to 5 different flavors of linguistic nonsense!
 - **Kerfuffle-Free Interface**: So simple, even your pet rock could use it!
 
 ## 🚀 How to Use This Malarkey
@@ -20,7 +19,7 @@ Welcome to the most spectacularly underwhelming, mind-numbingly pointless text p
 
 ## 🧠 Technical Mumbo Jumbo
 
-This app runs on the state-of-the-art "OpenChat 7B" model, which, unlike an actual parrot, doesn’t just mindlessly repeat what you say. Instead, it scrambles, twists, and remixes your words like a hyperactive DJ at a robot dance party. Think of it as an AI-powered game of telephone—except the last person in line is a very enthusiastic, slightly unpredictable poet!
+This app runs on the state-of-the-art gemma-3-12b model, which, unlike an actual parrot, doesn’t just mindlessly repeat what you say. Instead, it scrambles, twists, and remixes your words like a hyperactive DJ at a robot dance party. Think of it as an AI-powered game of telephone—except the last person in line is a very enthusiastic, slightly unpredictable poet!
 
 
 ## ⚠️ Warning
