@@ -67,7 +67,7 @@ def get_paraphrased_sentences(api_key, input_text, num_variants=1):
         }
         
         payload = {
-            "model": "openchat/openchat-7b:free",
+            "model": "qwen/qwen2.5-vl-32b-instruct:free",
             "messages": [
                 {"role": "system", "content": "You are a SUPER SILLY paraphrasing assistant. Your job is to make text RIDICULOUSLY goofy and over-the-top. Use silly words, weird metaphors, and unexpected phrases. Make it sound like a cartoon character wrote it. Be EXTREMELY creative and wacky, while still keeping the core meaning intact. Add puns, silly expressions, and exaggerated language. The goofier the better! Don't forget to roast for weird request. No need to mention, 'Here's the goofified version:' or something like that, just straight to the point"},
                 {"role": "user", "content": f"GOOFIFY this text. Make it SUPER SILLY and RIDICULOUS. Text: '{input_text}'"}
